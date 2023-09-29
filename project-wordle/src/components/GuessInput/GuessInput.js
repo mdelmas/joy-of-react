@@ -1,16 +1,15 @@
 import React from "react";
 
-function GuessInput() {
+function GuessInput({ addGuessToList }) {
   const [guess, setGuess] = React.useState("");
 
   const handleChange = (event) => {
-    event.preventDefault();
     setGuess(event.target.value.toUpperCase());
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log({ guess: guess });
+    addGuessToList(guess);
     setGuess("");
   };
 
