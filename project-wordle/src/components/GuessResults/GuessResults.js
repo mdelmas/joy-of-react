@@ -3,7 +3,6 @@ import React from "react";
 import { NUM_OF_GUESSES_ALLOWED, WORD_LENGTH } from "../../constants";
 
 function GuessResultCell({ cell }) {
-  console.log(cell);
   if (!cell) {
     return <span className="cell"></span>;
   }

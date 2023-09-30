@@ -1,6 +1,6 @@
 import React from "react";
 
-function GuessInput({ addGuessToList }) {
+function GuessInput({ handleNewGuess, disabled }) {
   const [guess, setGuess] = React.useState("");
 
   const handleChange = (event) => {
@@ -9,7 +9,7 @@ function GuessInput({ addGuessToList }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    addGuessToList(guess);
+    handleNewGuess(guess);
     setGuess("");
   };
 
@@ -22,6 +22,7 @@ function GuessInput({ addGuessToList }) {
         pattern="[A-Za-z]{5}"
         value={guess}
         onChange={handleChange}
+        disabled={disabled}
       />
     </form>
   );

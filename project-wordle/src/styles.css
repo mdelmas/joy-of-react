@@ -40,6 +40,14 @@ button {
   color: inherit;
 }
 
+button#restart {
+  margin: 5px;
+  padding: 5px 10px;
+  background-color: rgb(255, 255, 255, 0.2);
+  border-radius: 5px;
+  color: inherit;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
