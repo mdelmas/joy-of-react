@@ -4,7 +4,7 @@ import { sample } from "../../utils";
 import { WORDS } from "../../data";
 import GuessInput from "../GuessInput";
 import GuessResults from "../GuessResults";
-import Banner from "../Banner";
+import { LoseBanner, WinBanner } from "../Banner";
 
 import { checkGuess } from "../../game-helpers";
 import { NUM_OF_GUESSES_ALLOWED } from "../../constants";
@@ -16,43 +16,52 @@ import { NUM_OF_GUESSES_ALLOWED } from "../../constants";
 function Game() {
   const [answer, setAnswer] = React.useState(sample(WORDS));
   const [guessList, setGuessList] = React.useState([]);
-  const [banner, setBanner] = React.useState(null);
+  const [status, setStatus] = React.useState("playing");
+  // const [banner, setBanner] = React.useState(null);
 
   console.info({ answer });
-  const checkedGuessList = guessList.map((guess) => checkGuess(guess, answer));
+  const checkedGuessList = guessList.map((guess) => ({
+    id: guess.id,
+    value: guess.value,
+    check: checkGuess(guess.value, answer),
+  }));
 
   const resetGame = () => {
     setAnswer(sample(WORDS));
     setGuessList([]);
-    setBanner(null);
+    setStatus("playing");
   };
 
   const handleNewGuess = (guess) => {
-    if (guessList.length >= NUM_OF_GUESSES_ALLOWED) return;
-
+    const nextGuessList = guessList.concat({ value: guess, id: Math.random() });
     if (guess === answer) {
-      setBanner(
-        <Banner
-          bannerType={"happy"}
-          guessNumber={guessList.length + 1}
-          resetGame={resetGame}
-        />
-      );
-    } else if (guessList.length === NUM_OF_GUESSES_ALLOWED - 1) {
-      setBanner(
-        <Banner bannerType={"sad"} guessWord={answer} resetGame={resetGame} />
-      );
+      setStatus("win");
+    } else if (nextGuessList.length === NUM_OF_GUESSES_ALLOWED) {
+      setStatus("lose");
     }
-    setGuessList(guessList.concat(guess));
+    setGuessList(nextGuessList);
   };
 
   return (
     <>
-      {banner}
+      {status === "win" && (
+        <WinBanner
+          guessNumber={guessList.length}
+          action={{ label: "Restart Game", callback: resetGame }}
+        />
+      )}
+      {status === "lose" && (
+        <LoseBanner
+          guessWord={answer}
+          action={{ label: "Restart Game", callback: resetGame }}
+        />
+      )}
+
       <GuessResults guessList={checkedGuessList} />
+
       <GuessInput
         handleNewGuess={handleNewGuess}
-        disabled={guessList.length >= NUM_OF_GUESSES_ALLOWED}
+        disabled={status !== "playing"}
       />
     </>
   );

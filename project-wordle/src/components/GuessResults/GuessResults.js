@@ -2,36 +2,32 @@ import React from "react";
 
 import { NUM_OF_GUESSES_ALLOWED, WORD_LENGTH } from "../../constants";
 
-function GuessResultCell({ cell }) {
-  if (!cell) {
-    return <span className="cell"></span>;
-  }
-  return <span className={`cell ${cell.status}`}>{cell.letter}</span>;
+function GuessResultCell({ letter }) {
+  return letter === undefined ? (
+    <span className="cell"></span>
+  ) : (
+    <span className={`cell ${letter.status}`}>{letter.value}</span>
+  );
 }
 
 function GuessResultLine({ guess }) {
-  const displayedGuess = guess || Array(WORD_LENGTH);
   return (
     <p className="guess">
-      {[...displayedGuess].map((cell) => (
-        <GuessResultCell cell={cell} key={crypto.randomUUID()} />
-      ))}
+      {[...Array(WORD_LENGTH)].map((_, index) => {
+        let letter = guess ? guess.check[index] : undefined;
+        return <GuessResultCell letter={letter} key={index} />;
+      })}
     </p>
   );
 }
 
 function GuessResults({ guessList }) {
-  const emptyGuessList = [...Array(NUM_OF_GUESSES_ALLOWED - guessList.length)];
-
   return (
     <div className="guess-results">
-      {guessList.map((guess) => (
-        <GuessResultLine guess={guess} key={crypto.randomUUID()} />
-      ))}
-
-      {emptyGuessList.map(() => (
-        <GuessResultLine key={crypto.randomUUID()} />
-      ))}
+      {[...Array(NUM_OF_GUESSES_ALLOWED)].map((_, index) => {
+        let guess = index < guessList.length ? guessList[index] : undefined;
+        return <GuessResultLine guess={guess} key={index} />;
+      })}
     </div>
   );
 }
